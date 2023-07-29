@@ -23,3 +23,6 @@ DELETE /users/:userId/friends/:friendId
 
 **Note**: there is no need for path: `GET /users/:userId/friends/:friendId`, because if you have friendId, you can 
 treat it as a simple user and use: `GET /users/:userId`
+
+## Run Tests
+You can run `npm test`, to see model, and E2E tests, before running this command turn on your MongoDB.
