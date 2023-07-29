@@ -167,8 +167,7 @@ describe('app', () => {
             const friends = result.body;
 
             // Assert
-            console.log(friends);
-            // expect(friendsList.length).toEqual(2);
+            expect(friends.length).toEqual(2);
         });
     });
 

@@ -61,7 +61,7 @@ exports.removeById = (req, res) => {
 exports.addFriend = async (req, res) => {
     const userId = req.params.userId;
     if (!req.body.friendId) {
-        res.status(400).send('friendId is require')
+        res.status(400).send('friendId is required')
     }
 
     const friendId = req.body.friendId;
@@ -72,11 +72,8 @@ exports.addFriend = async (req, res) => {
 
 exports.removeFriend = async (req, res) => {
     const userId = req.params.userId;
-    if (!req.body.friendId) {
-        res.status(400).send('friendId is required')
-    }
-
     const friendId = req.body.friendId;
+
     const user = await UserModel.removeFriend(userId, friendId);
 
     res.send(user);
