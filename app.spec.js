@@ -67,7 +67,7 @@ describe('app', () => {
     });
 
     describe('GET /users/:userId/friends', () => {
-        it('should get a list of user friends', async () => {
+        it('should get a list of user friends, expanded=false/undefined', async () => {
             // Arrange
             const user1Data = {
                 firstName: "2-first",
@@ -116,6 +116,59 @@ describe('app', () => {
 
             // Assert
             expect(friendsList.length).toEqual(2);
+        });
+
+        it('should get a list of user friends, expanded=true', async () => {
+            // Arrange
+            const user1Data = {
+                firstName: "2-first",
+                lastName: "2-last",
+                email: "2@gmail.com",
+                password: "12345"
+            };
+            const user2Data = {
+                firstName: "2-first",
+                lastName: "2-last",
+                email: "2@gmail.com",
+                password: "12345"
+            };
+            const user3Data = {
+                firstName: "3-first",
+                lastName: "3-last",
+                email: "3@gmail.com",
+                password: "12345"
+            };
+
+            const user1Id = await createUser(user1Data);
+            const user2Id = await createUser(user2Data);
+            const user3Id = await createUser(user3Data);
+
+            const token = await getToken(user1Data.email, user1Data.password);
+
+            // Act
+            await request(app)
+                .post(`/users/${user1Id}/friends`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    friendId: user2Id
+                });
+            await request(app)
+                .post(`/users/${user1Id}/friends`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    friendId: user3Id
+                });
+
+            const result = await request(app)
+                .get(`/users/${user1Id}/friends`)
+                .set('Authorization', `Bearer ${token}`)
+                .query({'expand': true})
+
+            const friends = result.body;
+
+            // Assert
+            console.log(friends);
+            // expect(friendsList.length).toEqual(2);
         });
     });
 

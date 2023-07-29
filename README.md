@@ -9,9 +9,11 @@ POST /users/:userId/friends
 }
 ```
 
-Get list of user friends:
+Get list of user friends:  
+If you send: `expand=true`, it will show complete info of friends, otherwise it just returns their ids
 ```
-GET /users/:userId/friends
+GET /users/:userId/friends/?expand=true
+
 ```
 
 Delete a friend from user friends:

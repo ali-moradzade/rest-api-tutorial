@@ -127,7 +127,7 @@ exports.listFriends = async (userId, longVersion) => {
     const user = await User.findById(userId);
     const listOfFriends = user?.friends;
 
-    if (longVersion === true) {
+    if (longVersion === 'true') {
         return User.find({_id: {$in: listOfFriends}});
     }
 
