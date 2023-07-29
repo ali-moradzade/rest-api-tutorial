@@ -5,11 +5,7 @@ Add a new list of friends for user:
 ```
 POST /users/:userId/friends
 {
-    [
-       friendId1,
-       friendId2,
-       ...
-    ]
+   friendId
 }
 ```
 

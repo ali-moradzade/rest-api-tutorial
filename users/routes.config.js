@@ -33,13 +33,23 @@ exports.routesConfig = function (app) {
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.removeById
     ]);
-    app.post('/users/:userId/addFriend', [
+
+    /**
+     * Friends
+     */
+    app.get('/users/:userId/friends', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
+        UsersController.listFriends
+    ]);
+    app.post('/users/:userId/friends', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
         PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         UsersController.addFriend
     ]);
-    app.delete('/users/:userId/removeFriend', [
+    app.delete('/users/:userId/friends/:friendId', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
         PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,

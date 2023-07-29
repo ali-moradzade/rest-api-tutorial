@@ -55,6 +55,9 @@ exports.removeById = (req, res) => {
         });
 };
 
+/**
+ * Following routes are for friends
+ */
 exports.addFriend = async (req, res) => {
     const userId = req.params.userId;
     if (!req.body.friendId) {
@@ -64,7 +67,7 @@ exports.addFriend = async (req, res) => {
     const friendId = req.body.friendId;
     const user = await UserModel.addFriend(userId, friendId);
 
-    res.status(200).send(user);
+    res.send(user);
 }
 
 exports.removeFriend = async (req, res) => {
@@ -76,7 +79,7 @@ exports.removeFriend = async (req, res) => {
     const friendId = req.body.friendId;
     const user = await UserModel.removeFriend(userId, friendId);
 
-    res.status(200).send(user);
+    res.send(user);
 }
 
 exports.listFriends = async (req, res) => {

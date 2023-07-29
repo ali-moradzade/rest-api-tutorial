@@ -30,7 +30,7 @@ describe('app', () => {
     /**
      * TODO: clean the response, remove _id and __v
      */
-    describe('POST /users/:userId/addFriend', () => {
+    describe('POST /users/:userId/friends', () => {
         it('should work', async () => {
             // Arrange
             const user1Data = {
@@ -53,7 +53,7 @@ describe('app', () => {
 
             // Act
             const result = await request(app)
-                .post(`/users/${user1Id}/addFriend`)
+                .post(`/users/${user1Id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
                     friendId: user2Id
