@@ -92,7 +92,8 @@ exports.addFriend = async (userId, friendId) => {
     });
 }
 
-export const exportedForTesting = {
-    User,
+exports.friendsList = async (userId) => {
+    const user = await User.findById(userId);
+    return user.friends;
 }
 
