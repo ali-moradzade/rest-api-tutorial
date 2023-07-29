@@ -1,43 +1,28 @@
 const mongoose = require('../../common/services/mongoose.service').mongoose;
 import {afterEach, beforeEach, describe, expect, it} from "vitest";
-import {addFriend, addListOfFriends, removeFriend, createUser, findById, listFriends} from './users.model';
+import {addFriend, addListOfFriends, createUser, listFriends, removeFriend} from './users.model';
+
+async function generateFakeUser(number) {
+    const userData = {
+        firstName: `firstName-${number}`,
+        lastName: `lastName-${number}`,
+        email: `${number}@example.com`,
+        password: 'securePassword',
+        permissionLevel: 1,
+        friends: [],
+    };
+
+    return await createUser(userData);
+}
 
 describe('users.model', () => {
     let user1, user2, user3;
 
     beforeEach(async () => {
         // Add our initial data
-        const user1Data = {
-            firstName: 'firstName1',
-            lastName: 'lastName1',
-            email: '1@example.com',
-            password: 'securePassword',
-            permissionLevel: 1,
-            friends: [],
-        };
-
-        const user2Data = {
-            firstName: 'firstName2',
-            lastName: 'lastName2',
-            email: '2@example.com',
-            password: 'securePassword',
-            permissionLevel: 1,
-            friends: [],
-        };
-
-        const user3Data = {
-            firstName: 'firstName3',
-            lastName: 'lastName3',
-            email: '3@example.com',
-            password: 'securePassword',
-            permissionLevel: 1,
-            friends: [],
-        };
-
-        // Save the users to the database
-        user1 = await createUser(user1Data);
-        user2 = await createUser(user2Data);
-        user3 = await createUser(user3Data);
+        user1 = await generateFakeUser(1);
+        user2 = await generateFakeUser(2);
+        user3 = await generateFakeUser(3);
     });
 
     afterEach(async () => {
@@ -100,5 +85,5 @@ describe('users.model', () => {
             expect(friends[0]._id).toEqual(user2._id);
             expect(friends[1]._id).toEqual(user3._id);
         });
-    })
+    });
 });
