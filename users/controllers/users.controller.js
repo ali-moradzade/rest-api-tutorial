@@ -72,7 +72,7 @@ exports.addFriend = async (req, res) => {
 
 exports.removeFriend = async (req, res) => {
     const userId = req.params.userId;
-    const friendId = req.body.friendId;
+    const friendId = req.params.friendId;
 
     const user = await UserModel.removeFriend(userId, friendId);
 

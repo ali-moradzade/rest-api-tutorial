@@ -134,13 +134,13 @@ describe('app', () => {
                 });
 
             const result = await request(app)
-                .get(`/users/${user1.id}/friends`)
+                .del(`/users/${user1.id}/friends/${user2.id}`)
                 .set('Authorization', `Bearer ${token}`);
 
-            const friendsList = result.body;
+            const user = result.body;
 
             // Assert
-            expect(friendsList.length).toEqual(1);
+            expect(user?.friends?.length).toEqual(0);
         });
     });
 });
