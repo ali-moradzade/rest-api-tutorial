@@ -1,14 +1,28 @@
-import {afterEach, describe, expect, it} from "vitest";
+import {afterEach, beforeEach, describe, expect, it} from "vitest";
 import {agent as request} from 'supertest';
 import app from './app';
 import {mongoose} from "./common/services/mongoose.service";
 
-async function createUser(userData) {
+async function generateFakeUser(number) {
+    const userData = {
+        firstName: `firstName-${number}`,
+        lastName: `lastName-${number}`,
+        email: `${number}@example.com`,
+        password: 'securePassword',
+        permissionLevel: 1,
+        friends: [],
+    };
+
     const result = await request(app)
         .post('/users')
         .send(userData);
 
-    return result.body.id;
+    const _id = result.body.id;
+
+    return {
+        ...userData,
+        _id,
+    };
 }
 
 async function getToken(email, password) {
@@ -23,6 +37,15 @@ async function getToken(email, password) {
 }
 
 describe('app', () => {
+    let user1, user2, user3, token;
+
+    beforeEach(async () => {
+        user1 = await generateFakeUser(1);
+        user2 = await generateFakeUser(2);
+        user3 = await generateFakeUser(3);
+        token = await getToken(user1.email, user1.password);
+    });
+
     afterEach(async () => {
         await mongoose.connection.dropDatabase();
     });
@@ -32,31 +55,12 @@ describe('app', () => {
      */
     describe('POST /users/:userId/friends', () => {
         it('should add a friend for the user', async () => {
-            // Arrange
-            const user1Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-            const user2Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-
-            const user1Id = await createUser(user1Data);
-            const user2Id = await createUser(user2Data);
-
-            const token = await getToken(user1Data.email, user1Data.password);
-
             // Act
             const result = await request(app)
-                .post(`/users/${user1Id}/friends`)
+                .post(`/users/${user1._id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2Id
+                    friendId: user2._id
                 });
 
             const user = result.body;
@@ -69,48 +73,25 @@ describe('app', () => {
     describe('GET /users/:userId/friends', () => {
         it('should get a list of user friends, expanded=false/undefined', async () => {
             // Arrange
-            const user1Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-            const user2Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-            const user3Data = {
-                firstName: "3-first",
-                lastName: "3-last",
-                email: "3@gmail.com",
-                password: "12345"
-            };
-
-            const user1Id = await createUser(user1Data);
-            const user2Id = await createUser(user2Data);
-            const user3Id = await createUser(user3Data);
-
-            const token = await getToken(user1Data.email, user1Data.password);
+            const token = await getToken(user1.email, user1.password);
 
             // Act
             await request(app)
-                .post(`/users/${user1Id}/friends`)
+                .post(`/users/${user1._id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2Id
+                    friendId: user2._id
                 });
             await request(app)
-                .post(`/users/${user1Id}/friends`)
+                .post(`/users/${user1._id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user3Id
+                    friendId: user3._id
                 });
 
             const result = await request(app)
-                .get(`/users/${user1Id}/friends`)
-                .set('Authorization', `Bearer ${token}`)
+                .get(`/users/${user1._id}/friends`)
+                .set('Authorization', `Bearer ${token}`);
 
             const friendsList = result.body;
 
@@ -119,50 +100,24 @@ describe('app', () => {
         });
 
         it('should get a list of user friends, expanded=true', async () => {
-            // Arrange
-            const user1Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-            const user2Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-            const user3Data = {
-                firstName: "3-first",
-                lastName: "3-last",
-                email: "3@gmail.com",
-                password: "12345"
-            };
-
-            const user1Id = await createUser(user1Data);
-            const user2Id = await createUser(user2Data);
-            const user3Id = await createUser(user3Data);
-
-            const token = await getToken(user1Data.email, user1Data.password);
-
             // Act
             await request(app)
-                .post(`/users/${user1Id}/friends`)
+                .post(`/users/${user1._id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2Id
+                    friendId: user2._id
                 });
             await request(app)
-                .post(`/users/${user1Id}/friends`)
+                .post(`/users/${user1._id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user3Id
+                    friendId: user3._id
                 });
 
             const result = await request(app)
-                .get(`/users/${user1Id}/friends`)
+                .get(`/users/${user1._id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
-                .query({'expand': true})
+                .query({'expand': true});
 
             const friends = result.body;
 
@@ -173,36 +128,17 @@ describe('app', () => {
 
     describe('DELETE /users/:userId/friends/:friendId', () => {
         it('should remove specified friend from user friends', async () => {
-            // Arrange
-            const user1Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-            const user2Data = {
-                firstName: "2-first",
-                lastName: "2-last",
-                email: "2@gmail.com",
-                password: "12345"
-            };
-
-            const user1Id = await createUser(user1Data);
-            const user2Id = await createUser(user2Data);
-
-            const token = await getToken(user1Data.email, user1Data.password);
-
             // Act
             await request(app)
-                .post(`/users/${user1Id}/friends`)
+                .post(`/users/${user1._id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2Id
+                    friendId: user2._id
                 });
 
             const result = await request(app)
-                .get(`/users/${user1Id}/friends`)
-                .set('Authorization', `Bearer ${token}`)
+                .get(`/users/${user1._id}/friends`)
+                .set('Authorization', `Bearer ${token}`);
 
             const friendsList = result.body;
 
