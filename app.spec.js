@@ -118,4 +118,44 @@ describe('app', () => {
             expect(friendsList.length).toEqual(2);
         });
     });
+
+    describe('DELETE /users/:userId/friends/:friendId', () => {
+        it('should remove specified friend from user friends', async () => {
+            // Arrange
+            const user1Data = {
+                firstName: "2-first",
+                lastName: "2-last",
+                email: "2@gmail.com",
+                password: "12345"
+            };
+            const user2Data = {
+                firstName: "2-first",
+                lastName: "2-last",
+                email: "2@gmail.com",
+                password: "12345"
+            };
+
+            const user1Id = await createUser(user1Data);
+            const user2Id = await createUser(user2Data);
+
+            const token = await getToken(user1Data.email, user1Data.password);
+
+            // Act
+            await request(app)
+                .post(`/users/${user1Id}/friends`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    friendId: user2Id
+                });
+
+            const result = await request(app)
+                .get(`/users/${user1Id}/friends`)
+                .set('Authorization', `Bearer ${token}`)
+
+            const friendsList = result.body;
+
+            // Assert
+            expect(friendsList.length).toEqual(1);
+        });
+    });
 });
