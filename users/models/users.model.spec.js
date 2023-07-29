@@ -1,6 +1,6 @@
 const mongoose = require('../../common/services/mongoose.service').mongoose;
 import {afterEach, beforeEach, describe, expect, it} from "vitest";
-import {addFriend, createUser, findById, friendsList} from './users.model';
+import {addFriend, removeFriend, createUser, findById, friendsList} from './users.model';
 
 describe('users.model', () => {
     let user1, user2, user3;
@@ -53,6 +53,20 @@ describe('users.model', () => {
         // Assert
         expect(result.friends.length).toEqual(1);
         expect(result.friends[0]).toEqual(user2._id);
+    });
+
+    it('should be able to successfully remove a friend for user', async () => {
+        // Arrange
+        await addFriend(user1._id, user2._id);
+        await addFriend(user1._id, user3._id);
+
+        // Act
+        await removeFriend(user1._id, user2._id);
+        const result = await findById(user1._id);
+
+        // Assert
+        expect(result.friends.length).toEqual(1);
+        expect(result.friends[0]).toEqual(user3._id);
     });
 
     it('should be able to get list of user friends', async () => {

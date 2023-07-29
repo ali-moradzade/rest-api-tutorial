@@ -90,10 +90,20 @@ exports.addFriend = async (userId, friendId) => {
             friends: [friendId]
         }
     });
-}
+};
+
+exports.removeFriend = async (userId, friendId) => {
+    await User.findOneAndUpdate({
+        _id: userId,
+    }, {
+        $pull: {
+            friends: friendId
+        },
+    });
+};
 
 exports.friendsList = async (userId) => {
     const user = await User.findById(userId);
     return user.friends;
-}
+};
 
