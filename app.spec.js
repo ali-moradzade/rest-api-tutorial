@@ -17,11 +17,11 @@ async function generateFakeUser(number) {
         .post('/users')
         .send(userData);
 
-    const _id = result.body.id;
+    const id = result.body.id;
 
     return {
+        id,
         ...userData,
-        _id,
     };
 }
 
@@ -50,17 +50,14 @@ describe('app', () => {
         await mongoose.connection.dropDatabase();
     });
 
-    /**
-     * TODO: clean the response, remove _id and __v
-     */
     describe('POST /users/:userId/friends', () => {
         it('should add a friend for the user', async () => {
             // Act
             const result = await request(app)
-                .post(`/users/${user1._id}/friends`)
+                .post(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2._id
+                    friendId: user2.id
                 });
 
             const user = result.body;
@@ -77,20 +74,20 @@ describe('app', () => {
 
             // Act
             await request(app)
-                .post(`/users/${user1._id}/friends`)
+                .post(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2._id
+                    friendId: user2.id
                 });
             await request(app)
-                .post(`/users/${user1._id}/friends`)
+                .post(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user3._id
+                    friendId: user3.id
                 });
 
             const result = await request(app)
-                .get(`/users/${user1._id}/friends`)
+                .get(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`);
 
             const friendsList = result.body;
@@ -102,20 +99,20 @@ describe('app', () => {
         it('should get a list of user friends, expanded=true', async () => {
             // Act
             await request(app)
-                .post(`/users/${user1._id}/friends`)
+                .post(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2._id
+                    friendId: user2.id
                 });
             await request(app)
-                .post(`/users/${user1._id}/friends`)
+                .post(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user3._id
+                    friendId: user3.id
                 });
 
             const result = await request(app)
-                .get(`/users/${user1._id}/friends`)
+                .get(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .query({'expand': true});
 
@@ -130,14 +127,14 @@ describe('app', () => {
         it('should remove specified friend from user friends', async () => {
             // Act
             await request(app)
-                .post(`/users/${user1._id}/friends`)
+                .post(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    friendId: user2._id
+                    friendId: user2.id
                 });
 
             const result = await request(app)
-                .get(`/users/${user1._id}/friends`)
+                .get(`/users/${user1.id}/friends`)
                 .set('Authorization', `Bearer ${token}`);
 
             const friendsList = result.body;
