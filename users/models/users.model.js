@@ -127,4 +127,3 @@ exports.listFriends = async (userId) => {
     const user = await User.findById(userId);
     return user?.friends;
 };
-
