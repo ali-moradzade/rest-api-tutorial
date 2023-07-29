@@ -125,6 +125,6 @@ exports.removeFriend = async (userId, friendId) => {
 
 exports.listFriends = async (userId) => {
     const user = await User.findById(userId);
-    return user.friends;
+    return user?.friends;
 };
 
