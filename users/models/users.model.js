@@ -82,6 +82,9 @@ exports.removeById = (userId) => {
     });
 };
 
+/**
+ * Following APIs are for handling friends
+ */
 exports.addFriend = async (userId, friendId) => {
     return User.findOneAndUpdate({
             _id: userId,
@@ -94,7 +97,7 @@ exports.addFriend = async (userId, friendId) => {
     );
 };
 
-exports.addGroupOfFriends = async (userId, friendsIds) => {
+exports.addListOfFriends = async (userId, friendsIds) => {
     return User.findOneAndUpdate({
             _id: userId,
         }, {
@@ -120,7 +123,7 @@ exports.removeFriend = async (userId, friendId) => {
     );
 };
 
-exports.friendsList = async (userId) => {
+exports.listFriends = async (userId) => {
     const user = await User.findById(userId);
     return user.friends;
 };

@@ -1,6 +1,6 @@
 const mongoose = require('../../common/services/mongoose.service').mongoose;
 import {afterEach, beforeEach, describe, expect, it} from "vitest";
-import {addFriend, addGroupOfFriends, removeFriend, createUser, findById, friendsList} from './users.model';
+import {addFriend, addListOfFriends, removeFriend, createUser, findById, listFriends} from './users.model';
 
 describe('users.model', () => {
     let user1, user2, user3;
@@ -55,7 +55,7 @@ describe('users.model', () => {
 
     it('should be able to successfully add a group of friends for user', async () => {
         // Arrange && Act
-        const result = await addGroupOfFriends(user1._id, [user2._id, user3._id]);
+        const result = await addListOfFriends(user1._id, [user2._id, user3._id]);
 
         // Assert
         expect(result.friends.length).toEqual(2);
@@ -66,7 +66,7 @@ describe('users.model', () => {
 
     it('should be able to successfully remove a friend for user', async () => {
         // Arrange
-        await addGroupOfFriends(user1._id, [user2._id, user3._id]);
+        await addListOfFriends(user1._id, [user2._id, user3._id]);
 
         // Act
         const result = await removeFriend(user1._id, user2._id);
@@ -78,10 +78,10 @@ describe('users.model', () => {
 
     it('should be able to get list of user friends', async () => {
         // Arrange
-        await addGroupOfFriends(user1._id, [user2._id, user3._id]);
+        await addListOfFriends(user1._id, [user2._id, user3._id]);
 
         // Act
-        const friendsIds = await friendsList(user1._id);
+        const friendsIds = await listFriends(user1._id);
 
         expect(friendsIds.length).toEqual(2);
         expect(friendsIds[0]).toEqual(user2._id);

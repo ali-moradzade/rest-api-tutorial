@@ -81,7 +81,7 @@ exports.removeFriend = async (req, res) => {
 
 exports.listFriends = async (req, res) => {
     const userId = req.params.userId;
-    const friendsList = UserModel.friendsList(userId);
+    const friendsList = UserModel.listFriends(userId);
 
     res.send(friendsList);
 }
