@@ -83,35 +83,41 @@ exports.removeById = (userId) => {
 };
 
 exports.addFriend = async (userId, friendId) => {
-    await User.findOneAndUpdate({
-        _id: userId,
-    }, {
-        $push: {
-            friends: [friendId]
-        }
-    });
+    return User.findOneAndUpdate({
+            _id: userId,
+        }, {
+            $push: {
+                friends: [friendId]
+            },
+        },
+        {new: true}
+    );
 };
 
 exports.addGroupOfFriends = async (userId, friendsIds) => {
-    await User.findOneAndUpdate({
-        _id: userId,
-    }, {
-        $push: {
-            friends: {
-                $each: friendsIds,
-            }
-        }
-    });
-}
+    return User.findOneAndUpdate({
+            _id: userId,
+        }, {
+            $push: {
+                friends: {
+                    $each: friendsIds,
+                }
+            },
+        },
+        {new: true},
+    );
+};
 
 exports.removeFriend = async (userId, friendId) => {
-    await User.findOneAndUpdate({
-        _id: userId,
-    }, {
-        $pull: {
-            friends: friendId
+    return User.findOneAndUpdate({
+            _id: userId,
+        }, {
+            $pull: {
+                friends: friendId
+            },
         },
-    });
+        {new: true}
+    );
 };
 
 exports.friendsList = async (userId) => {

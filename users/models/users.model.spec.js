@@ -45,10 +45,8 @@ describe('users.model', () => {
     });
 
     it('should be able to successfully add a friend for user', async () => {
-        // Arrange
-        await addFriend(user1._id, user2._id);
-
-        const result = await findById(user1._id);
+        // Arrange && Act
+        const result = await addFriend(user1._id, user2._id);
 
         // Assert
         expect(result.friends.length).toEqual(1);
@@ -56,10 +54,8 @@ describe('users.model', () => {
     });
 
     it('should be able to successfully add a group of friends for user', async () => {
-        // Arrange
-        await addGroupOfFriends(user1._id, [user2._id, user3._id]);
-
-        const result = await findById(user1._id);
+        // Arrange && Act
+        const result = await addGroupOfFriends(user1._id, [user2._id, user3._id]);
 
         // Assert
         expect(result.friends.length).toEqual(2);
@@ -73,8 +69,7 @@ describe('users.model', () => {
         await addGroupOfFriends(user1._id, [user2._id, user3._id]);
 
         // Act
-        await removeFriend(user1._id, user2._id);
-        const result = await findById(user1._id);
+        const result = await removeFriend(user1._id, user2._id);
 
         // Assert
         expect(result.friends.length).toEqual(1);
