@@ -20,3 +20,6 @@ Delete a friend from user friends:
 ```
 DELETE /users/:userId/friends/:friendId
 ```
+
+**Note**: there is no need for path: `GET /users/:userId/friends/:friendId`, because if you have friendId, you can 
+treat it as a simple user and use: `GET /users/:userId`
