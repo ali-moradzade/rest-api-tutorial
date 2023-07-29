@@ -6,7 +6,13 @@ const userSchema = new Schema({
     lastName: String,
     email: String,
     password: String,
-    permissionLevel: Number
+    permissionLevel: Number,
+    friends: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Users'
+        }
+    ],
 });
 
 userSchema.virtual('id').get(function () {
@@ -24,10 +30,10 @@ userSchema.findById = function (cb) {
 
 const User = mongoose.model('Users', userSchema);
 
-
 exports.findByEmail = (email) => {
     return User.find({email: email});
 };
+
 exports.findById = (id) => {
     return User.findById(id)
         .then((result) => {
@@ -54,7 +60,7 @@ exports.list = (perPage, page) => {
                 } else {
                     resolve(users);
                 }
-            })
+            });
     });
 };
 
@@ -75,4 +81,8 @@ exports.removeById = (userId) => {
         });
     });
 };
+
+export const exportedForTesting = {
+    User,
+}
 
