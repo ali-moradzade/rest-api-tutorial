@@ -33,6 +33,7 @@ exports.getById = (req, res) => {
             res.status(200).send(result);
         });
 };
+
 exports.patchById = (req, res) => {
     if (req.body.password) {
         let salt = crypto.randomBytes(16).toString('base64');
@@ -53,3 +54,27 @@ exports.removeById = (req, res) => {
             res.status(204).send({});
         });
 };
+
+exports.addFriend = async (req, res) => {
+    const userId = req.query.userId;
+    if (!req.body.friendId) {
+        res.status(400).send('friendId is require')
+    }
+
+    const friendId = req.body.friendId;
+    const user = await UserModel.addFriend(userId, friendId);
+
+    res.status(204).send(user);
+}
+
+exports.removeFriend = async (req, res) => {
+    const userId = req.query.userId;
+    if (!req.body.friendId) {
+        res.status(400).send('friendId is required')
+    }
+
+    const friendId = req.body.friendId;
+    const user = await UserModel.removeFriend(userId, friendId);
+
+    res.status(200).send(user);
+}
