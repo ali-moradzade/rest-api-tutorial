@@ -123,7 +123,13 @@ exports.removeFriend = async (userId, friendId) => {
     );
 };
 
-exports.listFriends = async (userId) => {
+exports.listFriends = async (userId, longVersion) => {
     const user = await User.findById(userId);
-    return user?.friends;
+    const listOfFriends = user?.friends;
+
+    if (longVersion === true) {
+        return User.find({_id: {$in: listOfFriends}});
+    }
+
+    return listOfFriends;
 };

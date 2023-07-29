@@ -87,4 +87,16 @@ describe('users.model', () => {
         expect(friendsIds[0]).toEqual(user2._id);
         expect(friendsIds[1]).toEqual(user3._id);
     });
+
+    it('should be able to get list of user friends, longVersion=true', async () => {
+        // Arrange
+        await addListOfFriends(user1._id, [user2._id, user3._id]);
+
+        // Act
+        const friends = await listFriends(user1._id, true);
+
+        expect(friends.length).toEqual(2);
+        expect(friends[0]._id).toEqual(user2._id);
+        expect(friends[1]._id).toEqual(user3._id);
+    });
 });
