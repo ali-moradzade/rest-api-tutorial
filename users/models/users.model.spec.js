@@ -31,59 +31,59 @@ describe('users.model', () => {
 
     it('addFriend', async () => {
         // Arrange && Act
-        const result = await addFriend(user1._id, user2._id);
+        const result = await addFriend(user1.id, user2.id);
 
         // Assert
         expect(result.friends.length).toEqual(1);
-        expect(result.friends[0]).toEqual(user2._id);
+        expect(result.friends[0]).toEqual(user2.id);
     });
 
     it('addListOfFriends', async () => {
         // Arrange && Act
-        const result = await addListOfFriends(user1._id, [user2._id, user3._id]);
+        const result = await addListOfFriends(user1.id, [user2.id, user3.id]);
 
         // Assert
         expect(result.friends.length).toEqual(2);
-        expect(result.friends[0]).toEqual(user2._id);
-        expect(result.friends[1]).toEqual(user3._id);
+        expect(result.friends[0]).toEqual(user2.id);
+        expect(result.friends[1]).toEqual(user3.id);
     });
 
 
     it('removeFriend', async () => {
         // Arrange
-        await addListOfFriends(user1._id, [user2._id, user3._id]);
+        await addListOfFriends(user1.id, [user2.id, user3.id]);
 
         // Act
-        const result = await removeFriend(user1._id, user2._id);
+        const result = await removeFriend(user1.id, user2.id);
 
         // Assert
         expect(result.friends.length).toEqual(1);
-        expect(result.friends[0]).toEqual(user3._id);
+        expect(result.friends[0]).toEqual(user3.id);
     });
 
     describe('listFriends', () => {
         it('expand=undefined/false', async () => {
             // Arrange
-            await addListOfFriends(user1._id, [user2._id, user3._id]);
+            await addListOfFriends(user1.id, [user2.id, user3.id]);
 
             // Act
-            const friendsIds = await listFriends(user1._id);
+            const friendsIds = await listFriends(user1.id);
 
             expect(friendsIds.length).toEqual(2);
-            expect(friendsIds[0]).toEqual(user2._id);
-            expect(friendsIds[1]).toEqual(user3._id);
+            expect(friendsIds[0]).toEqual(user2.id);
+            expect(friendsIds[1]).toEqual(user3.id);
         });
 
         it('expand=true', async () => {
             // Arrange
-            await addListOfFriends(user1._id, [user2._id, user3._id]);
+            await addListOfFriends(user1.id, [user2.id, user3.id]);
 
             // Act
-            const friends = await listFriends(user1._id, true);
+            const friends = await listFriends(user1.id, 'true');
 
             expect(friends.length).toEqual(2);
-            expect(friends[0]._id).toEqual(user2._id);
-            expect(friends[1]._id).toEqual(user3._id);
+            expect(friends[0].id).toEqual(user2.id);
+            expect(friends[1].id).toEqual(user3.id);
         });
     });
 });

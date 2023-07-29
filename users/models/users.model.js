@@ -13,10 +13,10 @@ const userSchema = new Schema({
             ref: 'Users'
         }
     ],
-});
+}, {versionKey: false});
 
 userSchema.virtual('id').get(function () {
-    return this._id.toHexString();
+    return this._id
 });
 
 // Ensure virtual fields are serialised.
@@ -86,7 +86,7 @@ exports.removeById = (userId) => {
  * Following APIs are for handling friends
  */
 exports.addFriend = async (userId, friendId) => {
-    return User.findOneAndUpdate({
+    let user = await User.findOneAndUpdate({
             _id: userId,
         }, {
             $push: {
@@ -95,10 +95,15 @@ exports.addFriend = async (userId, friendId) => {
         },
         {new: true}
     );
+
+    user = user?.toJSON();
+    delete user?._id;
+
+    return user;
 };
 
 exports.addListOfFriends = async (userId, friendsIds) => {
-    return User.findOneAndUpdate({
+    let user = await User.findOneAndUpdate({
             _id: userId,
         }, {
             $push: {
@@ -109,10 +114,15 @@ exports.addListOfFriends = async (userId, friendsIds) => {
         },
         {new: true},
     );
+
+    user = user?.toJSON();
+    delete user?._id;
+
+    return user;
 };
 
 exports.removeFriend = async (userId, friendId) => {
-    return User.findOneAndUpdate({
+    let user = await User.findOneAndUpdate({
             _id: userId,
         }, {
             $pull: {
@@ -121,6 +131,11 @@ exports.removeFriend = async (userId, friendId) => {
         },
         {new: true}
     );
+
+    user = user?.toJSON();
+    delete user?._id;
+
+    return user;
 };
 
 exports.listFriends = async (userId, expand) => {
@@ -128,7 +143,14 @@ exports.listFriends = async (userId, expand) => {
     const listOfFriends = user?.friends;
 
     if (expand === 'true' && listOfFriends) {
-        return User.find({_id: {$in: listOfFriends}});
+        let users = await User.find({_id: {$in: listOfFriends}});
+
+        return users.map((user) => {
+            user = user?.toJSON();
+            delete user?._id;
+
+            return user;
+        })
     }
 
     return listOfFriends;
