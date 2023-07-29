@@ -82,6 +82,16 @@ exports.removeById = (userId) => {
     });
 };
 
+exports.addFriend = async (userId, friendId) => {
+    await User.findOneAndUpdate({
+        _id: userId,
+    }, {
+        $push: {
+            friends: [friendId]
+        }
+    });
+}
+
 export const exportedForTesting = {
     User,
 }

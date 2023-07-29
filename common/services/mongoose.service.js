@@ -9,11 +9,17 @@ const options = {
     // all other approaches are now deprecated by MongoDB:
     useNewUrlParser: true,
     useUnifiedTopology: true
-    
+
 };
 const connectWithRetry = () => {
     console.log('MongoDB connection with retry')
-    mongoose.connect("mongodb://localhost:27017/rest-tutorial", options).then(()=>{
+
+    let url = "mongodb://localhost:27017/rest-tutorial"
+    if (process.env.TEST) {
+        url = "mongodb://localhost:27017/rest-tutorial-test"
+    }
+
+    mongoose.connect(url, options).then(()=>{
         console.log('MongoDB is connected')
     }).catch(err=>{
         console.log('MongoDB connection unsuccessful, retry after 5 seconds. ', ++count);
