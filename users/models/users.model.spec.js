@@ -44,7 +44,7 @@ describe('users.model', () => {
         await mongoose.connection.dropDatabase();
     });
 
-    it('should be able to successfully add a friend for user', async () => {
+    it('addFriend', async () => {
         // Arrange && Act
         const result = await addFriend(user1._id, user2._id);
 
@@ -53,7 +53,7 @@ describe('users.model', () => {
         expect(result.friends[0]).toEqual(user2._id);
     });
 
-    it('should be able to successfully add a group of friends for user', async () => {
+    it('addListOfFriends', async () => {
         // Arrange && Act
         const result = await addListOfFriends(user1._id, [user2._id, user3._id]);
 
@@ -64,7 +64,7 @@ describe('users.model', () => {
     });
 
 
-    it('should be able to successfully remove a friend for user', async () => {
+    it('removeFriend', async () => {
         // Arrange
         await addListOfFriends(user1._id, [user2._id, user3._id]);
 
@@ -76,27 +76,29 @@ describe('users.model', () => {
         expect(result.friends[0]).toEqual(user3._id);
     });
 
-    it('should be able to get list of user friends', async () => {
-        // Arrange
-        await addListOfFriends(user1._id, [user2._id, user3._id]);
+    describe('listFriends', () => {
+        it('expand=undefined/false', async () => {
+            // Arrange
+            await addListOfFriends(user1._id, [user2._id, user3._id]);
 
-        // Act
-        const friendsIds = await listFriends(user1._id);
+            // Act
+            const friendsIds = await listFriends(user1._id);
 
-        expect(friendsIds.length).toEqual(2);
-        expect(friendsIds[0]).toEqual(user2._id);
-        expect(friendsIds[1]).toEqual(user3._id);
-    });
+            expect(friendsIds.length).toEqual(2);
+            expect(friendsIds[0]).toEqual(user2._id);
+            expect(friendsIds[1]).toEqual(user3._id);
+        });
 
-    it('should be able to get list of user friends, longVersion=true', async () => {
-        // Arrange
-        await addListOfFriends(user1._id, [user2._id, user3._id]);
+        it('expand=true', async () => {
+            // Arrange
+            await addListOfFriends(user1._id, [user2._id, user3._id]);
 
-        // Act
-        const friends = await listFriends(user1._id, true);
+            // Act
+            const friends = await listFriends(user1._id, true);
 
-        expect(friends.length).toEqual(2);
-        expect(friends[0]._id).toEqual(user2._id);
-        expect(friends[1]._id).toEqual(user3._id);
-    });
+            expect(friends.length).toEqual(2);
+            expect(friends[0]._id).toEqual(user2._id);
+            expect(friends[1]._id).toEqual(user3._id);
+        });
+    })
 });

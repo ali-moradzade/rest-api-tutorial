@@ -12,19 +12,12 @@ const options = {
 
 };
 const connectWithRetry = () => {
-    console.log('MongoDB connection with retry')
-
     let url = "mongodb://localhost:27017/rest-tutorial"
     if (process.env.TEST) {
         url = "mongodb://localhost:27017/rest-tutorial-test"
     }
 
-    mongoose.connect(url, options).then(()=>{
-        console.log('MongoDB is connected')
-    }).catch(err=>{
-        console.log('MongoDB connection unsuccessful, retry after 5 seconds. ', ++count);
-        setTimeout(connectWithRetry, 5000)
-    })
+    mongoose.connect(url, options).then(()=>{ }).catch(err=>{ setTimeout(connectWithRetry, 5000)})
 };
 
 connectWithRetry();
