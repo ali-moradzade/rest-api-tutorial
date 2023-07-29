@@ -64,7 +64,7 @@ exports.addFriend = async (req, res) => {
     const friendId = req.body.friendId;
     const user = await UserModel.addFriend(userId, friendId);
 
-    res.status(204).send(user);
+    res.status(200).send(user);
 }
 
 exports.removeFriend = async (req, res) => {
@@ -77,4 +77,11 @@ exports.removeFriend = async (req, res) => {
     const user = await UserModel.removeFriend(userId, friendId);
 
     res.status(200).send(user);
+}
+
+exports.listFriends = async (req, res) => {
+    const userId = req.params.userId;
+    const friendsList = UserModel.friendsList(userId);
+
+    res.send(friendsList);
 }
