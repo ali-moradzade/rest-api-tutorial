@@ -92,6 +92,18 @@ exports.addFriend = async (userId, friendId) => {
     });
 };
 
+exports.addGroupOfFriends = async (userId, friendsIds) => {
+    await User.findOneAndUpdate({
+        _id: userId,
+    }, {
+        $push: {
+            friends: {
+                $each: friendsIds,
+            }
+        }
+    });
+}
+
 exports.removeFriend = async (userId, friendId) => {
     await User.findOneAndUpdate({
         _id: userId,
